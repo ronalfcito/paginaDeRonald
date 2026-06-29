@@ -77,6 +77,7 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_SSH_PORT }}
           timeout: 600
+          command_timeout: 20m
           script: |
             echo " Desplegando servicios"
             docker login ghcr.io -u ronalfcito -p ${{ secrets.GHCR_PAT }}
