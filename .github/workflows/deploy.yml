@@ -28,7 +28,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ronalfcito
-          password: ${{ secrets.GHCR_PAT }}   # ⚠️ Usa tu PAT aquí
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Construir y publicar imagen Docker
         uses: docker/build-push-action@v5
