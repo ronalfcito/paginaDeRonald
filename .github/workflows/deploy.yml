@@ -28,7 +28,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}   # ⚠️ Usa tu PAT aquí
 
       - name: Construir y publicar imagen Docker
         uses: docker/build-push-action@v5
