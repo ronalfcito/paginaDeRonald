@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/ronalfcito/pagina
+  IMAGE_NAME: ghcr.io/ronalfcito/pagina:latest
 
 jobs:
   build-and-push:
