@@ -27,7 +27,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ronalfcito
           password: ${{ secrets.GHCR_PAT }}   # ⚠️ Usa tu PAT aquí
 
       - name: Construir y publicar imagen Docker
@@ -40,27 +40,44 @@ jobs:
             ${{ env.IMAGE_NAME }}:2.0.0
             ${{ env.IMAGE_NAME }}:latest
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Copiar stack.yml al VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          port: ${{ secrets.VPS_SSH_PORT }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: "stack.yml"
-          target: "~/despliegue/"
+      - name: "mostrar datos de conexión (sin secretos sensibles)"
+        run: |
+          echo "probando la conexión con SSH con:"
+          echo "Host: ${{ secrets.VPS_HOST }}"
+          echo "usuario: ${{ secrets.VPS_USER }}"
+          echo "puerto: ${{ secrets.VPS_SSH_PORT }}"
+          echo "password: [OCULTO POR SEGURIDAD]"
 
-      - name: Ejecutar despliegue en VPS
-        uses: appleboy/ssh-action@v0.1.10
+      - name: "probar conexión SSH al VPS"
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            docker pull ${{ env.IMAGE_NAME }}:latest
-            docker stack deploy -c ~/despliegue/stack.yml flask-app
+            echo "probando la conexión con SSH EN EL VPS"
+            touch quitoa.txt
+
+      - name: "pasar archivos desde git al vps"
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "app/stack.yml,app/Makefile"
+          target: "/home/${{ secrets.VPS_USER }}/despliegue"
+
+      - name: Despliegue de los servicios
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            echo " Desplegando servicios"
+            docker login ghcr.io -u ronalfcito -p ${{ secrets.GHCR_PAT }}
+            docker pull ghcr.io/ronalfcito/flask-app:latest
+            docker stack deploy -c /home/${{ secrets.VPS_USER }}/despliegue/app/stack.yml ronald
