@@ -5,8 +5,6 @@ services:
     image: ghcr.io/ronalfcito/flask-app:latest
     networks:
       - traefik-public
-    ports:
-      - "5001:5000"
     deploy:
       replicas: 1
       update_config:
