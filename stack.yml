@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  ronald:
+    image: ghcr.io/ronalfcito/flask-app:latest
+    networks:
+      - traefik-public
+    ports:
+      - "5000:5000"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.ronald.entrypoints=http"
+        - "traefik.http.routers.ronald.rule=Host(`ronald.byronnm.com`)"
+        - "traefik.http.middlewares.ronald-https-redirect.redirectscheme.scheme=https"
+        - "traefik.http.routers.ronald.middlewares=ronald-https-redirect"
+        - "traefik.http.routers.ronald-secure.entrypoints=https"
+        - "traefik.http.routers.ronald-secure.rule=Host(`ronald.byronnm.com`)"
+        - "traefik.http.routers.ronald-secure.tls=true"
+        - "traefik.http.routers.ronald-secure.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.ronald-secure.service=ronald"
+        - "traefik.http.services.ronald.loadbalancer.server.port=5000"
+        - "traefik.docker.network=traefik-public"
+
+networks:
+  traefik-public:
+    external: true
