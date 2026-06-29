@@ -1,7 +1,7 @@
 # Makefile para proyecto Flask con Docker y despliegue en VPS
 
 # Variables
-IMAGE_NAME = ghcr.io/ronalfcito/flask-app:latest
+IMAGE_NAME = ghcr.io/ronalfcito/pagina:latest
 STACK_FILE = stack.yml
 VPS_USER = $(shell echo $$VPS_USER)
 VPS_HOST = $(shell echo $$VPS_HOST)
