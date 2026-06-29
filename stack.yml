@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   ronald:
-    image: ghcr.io/ronalfcito/flask-app:latest
+    image: ghcr.io/ronalfcito/pagina:latest
     networks:
       - traefik-public
     deploy:

@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/ronalfcito/flask-app
+  IMAGE_NAME: ghcr.io/ronalfcito/pagina
 
 jobs:
   build-and-push:
@@ -81,5 +81,5 @@ jobs:
           script: |
             echo "Desplegando servicios"
             docker login ghcr.io -u ronalfcito -p ${{ secrets.GHCR_PAT }}
-            docker pull ghcr.io/ronalfcito/flask-app:latest
+            docker pull ghcr.io/ronalfcito/pagina:latest
             docker stack deploy -c /home/${{ secrets.VPS_USER }}/despliegue/stack.yml ronald
